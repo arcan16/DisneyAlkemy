@@ -3,6 +3,8 @@ package com.pelisflix.controllers;
 import com.pelisflix.dto.generos.AddGeneroDTO;
 import com.pelisflix.models.GeneroEntity;
 import com.pelisflix.repositories.GeneroRepository;
+import com.pelisflix.services.GeneroService;
+import com.sendgrid.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -27,41 +29,30 @@ public class GeneroController {
     @Value("${spring.genero.image}")
     private String generoPath;
 
+    @Autowired
+    private GeneroService generoService;
+
+    /**
+     * Crea un nuevo registro de genero
+     * @param addGeneroDTO Record encargado de desserializar el json resibido en la peticion
+     * @return Mensaje con informacion sobre el resultado
+     * @throws IOException Controla las excepciones que pudieran surgir de manejar los directorios
+     */
     @PostMapping
     @Transactional
     public ResponseEntity<?> addGenero(@ModelAttribute AddGeneroDTO addGeneroDTO) throws IOException {
-        GeneroEntity genero = new GeneroEntity(addGeneroDTO, generoPath);
-
-        String fileName = addGeneroDTO.imagen().getOriginalFilename();
-        Path path = Paths.get(generoPath + fileName);
-        Files.createDirectories(path.getParent());
-        Files.copy(addGeneroDTO.imagen().getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
-
-        try {
-            generoRepository.save(genero);
-        }catch (Exception e){
-            File file = new File(String.valueOf(path.toFile()));
-            if(file.exists() && file.delete()){
-                System.out.println("Archivo eliminado");
-            }
-            System.out.println("Error " + Arrays.toString(e.getStackTrace()));
-        }
-        return ResponseEntity.ok().body("{\"message\":\"Genero creado correctamente\"}");
+        if(generoService.addGenero(addGeneroDTO))
+            return ResponseEntity.ok().body("{\"message\":\"Genero creado correctamente\"}");
+        return ResponseEntity.badRequest().body("{\"err\":\"Ocurrio un error al guardar el registro\"}");
     }
 
+    /**
+     * Elimina un registro de la base de datos utilizando el parametro recibido en la peticion
+     * @param id Clve primaria recibida a traves de la url que se utilizara para la eliminacion del registro
+     * @return Mensaje con informacion sobre el resultado de consulta
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteGenero(@PathVariable Long id){
-        if(generoRepository.existsById(id)){
-            GeneroEntity genero = generoRepository.getReferenceById(id);
-            generoRepository.deleteById(id);
-            File file = new File(genero.getImagen());
-            if(file.exists() && file.delete()){
-                return ResponseEntity.ok().body("{\"message\":\"Genero eliminado correctamente\"}");
-            }else{
-                return ResponseEntity.ok().body("{\"message\":\"Registro eliminado correctamente, pero la imagen no se encontro\"}");
-            }
-        }
-        else
-            return ResponseEntity.ok().body("{\"message\":\"El genero indicadao no existe\"}");
+        return generoService.deleteGenero(id);
     }
 }

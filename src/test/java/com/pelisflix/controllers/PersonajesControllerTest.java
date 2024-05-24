@@ -9,6 +9,7 @@ import com.pelisflix.models.PersonajeEntity;
 import com.pelisflix.repositories.PersonajesRepository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,7 @@ class PersonajesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Consulta de datos del personaje")
     void characterDetails() throws Exception {
         Long personajeId = 1L;
 
@@ -99,6 +101,7 @@ class PersonajesControllerTest {
     }
     @Test
     @WithMockUser
+    @DisplayName("Test - Consulta de personaje que no existe")
     void notExistCharacterDetails() throws Exception {
         Long personajeId = 1L;
 
@@ -111,6 +114,7 @@ class PersonajesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Creacion de registro exitosa")
     void addCharacter() throws Exception {
         Path filePath = Paths.get("src/main/resources/images/characters/ToyStory.webp");
         InputStream inputStream = Files.newInputStream(filePath);
@@ -130,6 +134,7 @@ class PersonajesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Error al crear personaje")
     void addCharacterAlreadyAdded() throws Exception {
         Path filePath = Paths.get("src/main/resources/images/characters/ToyStory.webp");
         InputStream inputStream = Files.newInputStream(filePath);
@@ -149,6 +154,7 @@ class PersonajesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Consulta de registro usando filtros")
     void getCharactersOrFilterByName() throws Exception {
         List<PersonajeEntity> listPersonajes = new ArrayList<>();
         listPersonajes.add(personaje);
@@ -189,6 +195,7 @@ class PersonajesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Actualizacion de datos de un registro")
     void updateCharacter() throws Exception {
         Optional<PersonajeEntity> emptyOptional = Optional.empty();
         when(personajesRepository.findById(personaje.getId())).thenReturn(emptyOptional);
@@ -199,6 +206,7 @@ class PersonajesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Eliminacion de registro sin exito")
     void deleteCharacter() throws Exception {
         Optional<PersonajeEntity> emptyOptional = Optional.empty();
         when(personajesRepository.findById(1L)).thenReturn(emptyOptional);

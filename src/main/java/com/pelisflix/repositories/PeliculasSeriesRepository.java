@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface PeliculasSeriesRepository extends JpaRepository<PeliculasSeriesEntity, Long> {
 
-
     List<PeliculasSeriesEntity> findByIdIn(List<Long> integers);
 
     List<PeliculasSeriesEntity> findByPersonajes(PersonajeEntity personajeEntity);

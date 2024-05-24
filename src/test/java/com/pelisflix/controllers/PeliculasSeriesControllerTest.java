@@ -9,6 +9,7 @@ import com.pelisflix.models.PersonajeEntity;
 import com.pelisflix.repositories.PeliculasSeriesRepository;
 import com.pelisflix.repositories.PersonajesRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -76,6 +77,7 @@ class PeliculasSeriesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Agregar pelicula o serie")
     void addMovie() throws Exception {
         String expected = "[{\"campo\":\"titulo\",\"error\":\"must not be null\"}," +
                 "{\"campo\":\"calificacion\",\"error\":\"must not be null\"}," +
@@ -89,6 +91,7 @@ class PeliculasSeriesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Consulta utilizando parametros como filtro")
     void getAllMovies() throws Exception {
         List<PeliculasSeriesEntity> peliculasSeriesList = new ArrayList<>();
         peliculasSeriesList.add(peliculasSeries);
@@ -123,6 +126,7 @@ class PeliculasSeriesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Consulta de pelicula o serie usando id")
     void getAllMoviesDetails() throws Exception {
         mvc.perform(get("/moviesDetails/{id}", 6))
                 .andExpect(status().isBadRequest())
@@ -134,6 +138,7 @@ class PeliculasSeriesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Actualizacion de datos")
     void updateMovie() throws Exception {
         String expectedResponse = "[{\"campo\":\"idMovie\",\"error\":\"must not be null\"}]";
         String expectedResponse2 = "[{\"campo\":\"idMovie\",\"error\":\"Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; For input string: \\\"a\\\"\"}]";
@@ -150,6 +155,7 @@ class PeliculasSeriesControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Test - Eliminacion de registro ")
     void deleteMovieSerie() throws Exception {
         when(peliculasSeriesRepository.existsById(1L)).thenReturn(false);
         mvc.perform(delete("/deleteMovieSerie/{id}",6))

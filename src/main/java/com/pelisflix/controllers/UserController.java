@@ -26,6 +26,13 @@ public class UserController {
     @Autowired
     private EmailSendGrid emailSendGrid;
 
+    /**
+     * Crea un registro de usuario con los datos recibidos
+     * @param registerUserDTO Record responsable de recibir el json y convertirlo en un objeto para poder
+     *                        utilizar su informacion
+     * @return Mensaje con informacion sobre el resultado de la consulta
+     * @throws IOException Controla las excepciones que podrian surgir de manipular los directorios y archivos
+     */
     @PostMapping("/auth/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterUserDTO registerUserDTO) throws IOException {
         if(userRepository.existsByUsername(registerUserDTO.username()))
